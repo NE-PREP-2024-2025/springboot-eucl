@@ -5,6 +5,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -28,6 +29,13 @@ public class EmailService {
     @Async
     public void sendResetPasswordOtp(String to, String name, String otp){
         sendOtpEmail(to, name, otp, OtpType.RESET_PASSWORD);
+    }
+    public void sendNotification(String to,String message){
+        try {
+            sendNotificationEmail(to,message);
+        } catch (MessagingException e) {
+            log.error("Unable to send the email", e);
+        }
     }
 
     private void sendOtpEmail(String to, String name, String otp, OtpType otpType){
@@ -64,6 +72,27 @@ public class EmailService {
             log.error("Unable to send the email", e);
         }
     }
+    private void sendNotificationEmail(String to,String message) throws MessagingException {
+       try {
+           Context context=new Context();
+           context.setVariable("message",message);
+           MimeMessage mimeMessage=mailSender.createMimeMessage();
+           MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_MIXED);
+           String process = "";
+           String templateName = "";
+           helper.setText(process);
+           helper.setTo(to);
+           helper.setSubject("Notification");
+           helper.setFrom("${app.email.from}");
+           mailSender.send(mimeMessage);
+       }
+       catch (Exception e) {
+           log.error("Unable to send the email", e);
+       }
 
+
+
+
+    }
 
 }

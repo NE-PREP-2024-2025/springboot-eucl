@@ -23,8 +23,8 @@ public class ApplicationConfig {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         authorize -> authorize
-                                 .requestMatchers("/api/v1/users/all").hasRole("ADMIN")
-                                .requestMatchers("/api/v1/users/*").authenticated()
+                                 .requestMatchers("/api/v1/users/all","/api/v1/tokens/all","/api/v1/meters/all","/api/v1/meters/new").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/users/*","/api/v1/notifications/*","/api/v1/tokens/*","/api/v1/meters/*").authenticated()
                                 .requestMatchers("/api/v1/auth/?*").permitAll()
                         .anyRequest().permitAll()
                 )
