@@ -37,7 +37,7 @@ public class PurchasedTokenController {
     public ResponseEntity<SuccessResponse<List<PurchasedTokenModel>>> getTokenByMeterNumber(@Valid @PathVariable Long meterNumber) throws BadRequestException {
         return ResponseEntity.ok().body(new SuccessResponse<List<PurchasedTokenModel>>("Token retrieved successfully",purchasedTokenServices.getTokenByMeterNumber(meterNumber)));
    }
-    @PostMapping("{token}")
+    @PostMapping("/validate/{token}")
     public ResponseEntity<SuccessResponse<PurchasedTokenModel>> validateToken(@PathVariable String token) throws BadRequestException {
         return ResponseEntity.ok().body(purchasedTokenServices.getTOkenByToken(token));
     }

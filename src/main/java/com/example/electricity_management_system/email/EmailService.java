@@ -43,7 +43,7 @@ public class EmailService {
             Context context = new Context();
             context.setVariable("name", name);
             context.setVariable("otp", otp);
-            context.setVariable("companyName", "BNR Bank");
+            context.setVariable("companyName", "EUCL");
             context.setVariable("expirationTime", "10");
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_MIXED);
@@ -52,12 +52,12 @@ public class EmailService {
 
             switch(otpType) {
                 case VERIFY_ACCOUNT -> {
-                    templateName = OtpType.VERIFY_ACCOUNT.name().toLowerCase();
+                    templateName = "AccountVerificationEmailTemplate";
                     process = templateEngine.process(templateName, context);
                     helper.setSubject("Verify your account with - One time Password (OTP) Required.");
                 }
                 case RESET_PASSWORD -> {
-                    templateName = OtpType.RESET_PASSWORD.name().toLowerCase();
+                    templateName = "PasswordResetEmailTemplate";
                     process = templateEngine.process(templateName, context);
                     helper.setSubject("Reset your password with - One time Password (OTP) Required.");
                 }
@@ -66,7 +66,7 @@ public class EmailService {
 
             helper.setText(process, true);
             helper.setTo(to);
-            helper.setFrom("noreply@bnr.com");
+            helper.setFrom("${app.email.from}");
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
             log.error("Unable to send the email", e);
@@ -79,7 +79,7 @@ public class EmailService {
            MimeMessage mimeMessage=mailSender.createMimeMessage();
            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_MIXED);
            String process = "";
-           String templateName = "";
+           String templateName = "ElectricityManagementNotification";
            helper.setText(process);
            helper.setTo(to);
            helper.setSubject("Notification");

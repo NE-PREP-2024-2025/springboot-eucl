@@ -1,9 +1,6 @@
 package com.example.electricity_management_system.controller;
 
-import com.example.electricity_management_system.dto.AuthResponseDto;
-import com.example.electricity_management_system.dto.LoginDto;
-import com.example.electricity_management_system.dto.RegisterResponseDto;
-import com.example.electricity_management_system.dto.UserRegisterDto;
+import com.example.electricity_management_system.dto.*;
 import com.example.electricity_management_system.model.UserModel;
 import com.example.electricity_management_system.security.JwtProvider;
 import com.example.electricity_management_system.security.UserServiceImplementation;
@@ -15,9 +12,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.hibernate.annotations.CompositeType;
+import jakarta.validation.constraints.Email;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -78,5 +75,34 @@ public class AuthController {
         String token= JwtProvider.generateToken(authentication);
         return ResponseEntity.ok(new AuthResponseDto(token,"Login successfully"));
     }
+    @PostMapping("/request-reset-password")
+    ResponseEntity<SuccessResponse<String>> requestResetPassword(@Valid  @RequestBody EmailDto emailDto){
+        userServices.requestResetPassword(emailDto.email);
+        return ResponseEntity.ok().body(new SuccessResponse<>("OTP sent successfully"));
+    }
+    @PostMapping("/verify-reset-password")
+    ResponseEntity<SuccessResponse<String>> verifyRequestPassword(@Valid @RequestBody VerifyDto verifyDto ){
+        userServices.verifyResetPassword(verifyDto.email,verifyDto.otp);
+        return ResponseEntity.ok().body(new SuccessResponse<>("OTP verified successfully"));
+
+    }
+    @PostMapping("/reset-password")
+    ResponseEntity<SuccessResponse<String>> resetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto){
+        userServices.resetPassword(resetPasswordDto.email,resetPasswordDto.password);
+        return ResponseEntity.ok().body(new SuccessResponse<>("Password reset successfully"));
+    }
+    @PostMapping("/request-email")
+    ResponseEntity<SuccessResponse<String>> requestResetEmail( @Valid  @RequestBody EmailDto emailDto) throws BadRequestException {
+        userServices.requestEmailVerification(emailDto.email);
+        return ResponseEntity.ok().body(new SuccessResponse<>("Email sent successfully"));
+    }
+    @PostMapping("/verify-email")
+    ResponseEntity<SuccessResponse<String>> verifyEmail(@Valid  @RequestBody VerifyDto verifyDto ){
+        userServices.verifyEmail(verifyDto.email,verifyDto.otp);
+        return ResponseEntity.ok().body(new SuccessResponse<>("Email verified successfully"));
+    }
+
+
+
 
 }

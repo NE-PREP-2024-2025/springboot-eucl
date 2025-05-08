@@ -35,7 +35,7 @@ public class PurchasedTokenModel {
     @Column(length = 11)
     public Integer amount;
     public TokenStatus tokenStatus=TokenStatus.NEW;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "meter_id")
     public MeterModel meterNumber;
     @JsonProperty("token")
